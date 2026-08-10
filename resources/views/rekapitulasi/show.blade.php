@@ -1,0 +1,350 @@
+@extends('layouts.app')
+
+@section('content')
+
+<style>
+    .operator-hero {
+        width: 100%;
+        padding: 16px 20px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #4B49AC 0%, #7978E9 55%, #F3797E 100%);
+        color: #fff;
+        box-shadow: 0 14px 32px rgba(75,73,172,0.24);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .operator-hero-title {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+    }
+
+    .operator-hero-subtitle {
+        font-size: 12px;
+        opacity: 0.85;
+        margin-top: 4px;
+    }
+
+    .btn-reset {
+        padding: 10px 22px;
+        border-radius: 14px;
+        font-weight: 800;
+        background: #f1f5ff;
+        color: #4B49AC;
+        border: 1px solid rgba(75,73,172,0.15);
+        transition: all 0.2s ease;
+        text-decoration: none !important;
+        min-width: 145px;
+        text-align: center;
+    }
+
+    .btn-reset:hover {
+        background: #4B49AC;
+        color: #fff;
+        box-shadow: 0 6px 14px rgba(75,73,172,0.2);
+    }
+
+    .info-card,
+    .table-card {
+        background: #fff;
+        border-radius: 22px;
+        box-shadow: 0 10px 30px rgba(75, 73, 172, 0.10);
+        border: 1px solid rgba(75, 73, 172, 0.06);
+    }
+
+    .summary-box {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 16px 18px;
+        height: 100%;
+    }
+
+    .summary-label {
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 6px;
+        font-weight: 700;
+    }
+
+    .summary-value {
+        font-size: 15px;
+        font-weight: 800;
+        color: #1f2937;
+    }
+
+    .operator-table {
+        border-collapse: separate;
+        border-spacing: 0 9px;
+    }
+
+    .operator-table thead th {
+        font-size: 12px;
+        color: #1f2937;
+        font-weight: 900;
+        text-transform: uppercase;
+        border: none;
+        background: #e9edff;
+        padding: 14px;
+        text-align: center;
+        white-space: nowrap;
+        border-bottom: 2px solid rgba(75,73,172,0.22);
+    }
+
+    .operator-table thead th:first-child {
+        border-radius: 14px 0 0 14px;
+    }
+
+    .operator-table thead th:last-child {
+        border-radius: 0 14px 14px 0;
+    }
+
+    .operator-table tbody tr {
+        background: #fff;
+        box-shadow: 0 5px 18px rgba(75, 73, 172, 0.06);
+    }
+
+    .operator-table tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(75, 73, 172, 0.12);
+        background: #f8faff;
+    }
+
+    .operator-table tbody td {
+        border: none;
+        padding: 14px;
+        font-size: 13px;
+        vertical-align: middle;
+        background: #fff;
+        text-align: center;
+    }
+
+    .nik-badge {
+        display: inline-flex;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef3ff;
+        color: #4B49AC;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .status-empty,
+    .status-progress,
+    .status-complete,
+    .status-danger,
+    .status-review,
+    .status-approval {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 850;
+        min-width: 130px;
+    }
+
+    .status-empty {
+        background: #fff7ed;
+        color: #ea580c;
+    }
+
+    .status-progress {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .status-complete {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .status-danger {
+        background: #fff0f1;
+        color: #dc3545;
+    }
+
+    .status-review {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .status-approval {
+        background: #f5f3ff;
+        color: #7c3aed;
+    }
+
+    .btn-action-detail {
+        width: 38px;
+        height: 38px;
+        border: none;
+        border-radius: 999px;
+        font-size: 16px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 2px;
+        background: rgba(125, 160, 250, 0.14);
+        color: #4B49AC;
+    }
+
+    .btn-action-detail:hover {
+        background: #4B49AC;
+        color: #fff;
+    }
+
+    .empty-state {
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 20px;
+        padding: 36px;
+        text-align: center;
+        color: #64748b;
+    }
+</style>
+
+<div class="operator-page">
+
+    <div class="operator-hero mb-4">
+        <div>
+            <div class="operator-hero-title">Detail Periode Operator</div>
+            <div class="operator-hero-subtitle">
+                Daftar periode wajib operator berdasarkan tanggal masuk kerja dari NIK.
+            </div>
+        </div>
+
+        <a href="{{ route('rekapitulasi.index') }}" class="btn btn-reset">
+            <i class="bi bi-arrow-left me-1"></i>
+            Kembali
+        </a>
+    </div>
+
+    <div class="info-card p-3 mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="summary-box">
+                    <div class="summary-label">Nama Operator</div>
+                    <div class="summary-value">{{ $operator->nama }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="summary-box">
+                    <div class="summary-label">NIK</div>
+                    <div class="summary-value">
+                        <span class="nik-badge">{{ $operator->nik }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="summary-box">
+                    <div class="summary-label">Tanggal Masuk</div>
+                    <div class="summary-value">
+                        {{ $joinDate ? $joinDate->format('d/m/Y') : '-' }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="summary-box">
+                    <div class="summary-label">Divisi</div>
+                    <div class="summary-value">{{ $operator->divisi->nama_divisi ?? '-' }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="summary-box">
+                    <div class="summary-label">Leader</div>
+                    <div class="summary-value">{{ $operator->leader->name ?? '-' }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card p-3">
+        <div class="table-responsive">
+            <table class="table operator-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">No</th>
+                        <th>Periode</th>
+                        <th>Jumlah Part</th>
+                        <th>Minimal Part</th>
+                        <th>Assessment Masuk</th>
+                        <th>Status Periode</th>
+                        <th style="width: 90px;">Detail</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse($periodRows as $row)
+                        @php
+                            $badgeClass = match($row['status_key']) {
+                                'belum_mengisi' => 'status-empty',
+                                'belum_lengkap' => 'status-progress',
+                                'lulus' => 'status-complete',
+                                'tidak_lulus' => 'status-danger',
+                                'submitted' => 'status-review',
+                                'dinilai' => 'status-approval',
+                                default => 'status-review',
+                            };
+                        @endphp
+
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+
+                            <td>
+                                <span class="nik-badge">
+                                    {{ $row['periode']->bulan }}/{{ $row['periode']->tahun }}
+                                </span>
+                            </td>
+
+                            <td>{{ $row['part_count'] }}</td>
+
+                            <td>{{ $row['minimum_part'] }}</td>
+
+                            <td>{{ $row['assessment_count'] }}</td>
+
+                            <td>
+                                <span class="{{ $badgeClass }}">
+                                    {{ $row['status_label'] }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <a href="{{ route('rekapitulasi.period', [$operator->id, $row['periode']->id]) }}"
+                                   class="btn-action-detail"
+                                   title="Detail Part Periode">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    <div class="fw-semibold mb-1">Belum ada periode wajib untuk operator ini.</div>
+                                    <div class="small">
+                                        Pastikan data periode sudah dibuat pada Master Periode.
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@endsection
