@@ -226,23 +226,7 @@
 }
 </style>
 <div class="leader-page">
-	<!-- <div class="leader-hero mb-4"> -->
-		<!-- <div>
-			<div class="leader-title">Mapping Bawahan Leader</div>
-			<div class="leader-subtitle">Tentukan operator yang menjadi bawahan Leader.</div>
-		</div>
-		<a href="{{ route('leader-assignments.index') }}" class="btn-back">Kembali</a> -->
 	</div>
-	@if(session('success'))
-		<div class="alert alert-success rounded-4 border-0 shadow-sm">
-			{{ session('success') }}
-		</div>
-	@endif
-	@if(session('error'))
-		<div class="alert alert-danger rounded-4 border-0 shadow-sm">
-			{{ session('error') }}
-		</div>
-	@endif
 	@if($errors->any())
 		<div class="alert alert-danger rounded-4 border-0 shadow-sm">
 			<ul class="mb-0">

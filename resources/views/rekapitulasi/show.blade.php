@@ -212,26 +212,12 @@
 
 <div class="operator-page">
 
-    <div class="operator-hero mb-4">
-        <div>
-            <div class="operator-hero-title">Detail Periode Operator</div>
-            <div class="operator-hero-subtitle">
-                Daftar periode wajib operator berdasarkan tanggal masuk kerja dari NIK.
-            </div>
-        </div>
-
-        <a href="{{ route('rekapitulasi.index') }}" class="btn btn-reset">
-            <i class="bi bi-arrow-left me-1"></i>
-            Kembali
-        </a>
-    </div>
-
     <div class="info-card p-3 mb-4">
         <div class="row g-3">
             <div class="col-md-3">
                 <div class="summary-box">
                     <div class="summary-label">Nama Operator</div>
-                    <div class="summary-value">{{ $operator->nama }}</div>
+                    <div class="summary-value">{{ $operator->nama_lengkap }}</div>
                 </div>
             </div>
 

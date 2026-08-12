@@ -7,6 +7,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
         :root {
             --primary: #4B49AC;
@@ -575,8 +576,6 @@
 
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
     @php
     $partList=$parts->map(function($part){
     return[
@@ -680,25 +679,45 @@ function pilihPart(part){
 
     partSuggestion.style.display='none';
 
-$.get(
-    "{{ url('/operator-assessment/get-sub-process') }}/"+part.id,
-    function(response){
+fetch("{{ url('/operator-assessment/get-sub-process') }}/" + part.id)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Gagal mengambil Sub Proses. HTTP ' + response.status);
+        }
 
-        console.log(response);
+        return response.json();
+    })
+    .then(response => {
+
+        console.log('Sub Proses Part ID ' + part.id + ':', response);
 
         currentSubProcess = response;
 
         searchSub.placeholder = 'Cari Sub Proses...';
 
-    }
-);
+    })
+    .catch(error => {
+
+        console.error('ERROR GET SUB PROCESS:', error);
+
+        currentSubProcess = [];
+
+        searchSub.placeholder = 'Sub Proses gagal dimuat...';
+
+    });
 }
 
 searchSub.addEventListener('focus', function () {
 
     if (!partId.value) {
 
-        alert('Silakan pilih Part terlebih dahulu.');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Part Belum Dipilih',
+            text: 'Silakan pilih Part terlebih dahulu.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#4B49AC'
+        });
 
         searchPart.focus();
 

@@ -1416,6 +1416,81 @@
         .target-card .target-summary span:last-child{
             flex:0 0 auto;
         }
+        .mapping-alert{
+            display:flex;
+            align-items:center;
+            gap:14px;
+            padding:15px 18px;
+            border-radius:16px;
+            background:linear-gradient(135deg,#fff7ed,#fff1f2);
+            border:1px solid #fed7aa;
+            box-shadow:0 10px 24px rgba(245,158,11,.08);
+        }
+
+        .mapping-alert-icon{
+            width:44px;
+            height:44px;
+            flex:0 0 44px;
+            border-radius:13px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#fff4df;
+            color:#e69a00;
+            font-size:21px;
+        }
+
+        .mapping-alert-content{
+            flex:1;
+            min-width:0;
+        }
+
+        .mapping-alert-title{
+            font-size:13px;
+            font-weight:950;
+            color:#92400e;
+        }
+
+        .mapping-alert-text{
+            margin-top:3px;
+            font-size:11px;
+            font-weight:700;
+            color:#78716c;
+        }
+
+        .mapping-alert-button{
+            display:inline-flex;
+            align-items:center;
+            gap:7px;
+            padding:9px 13px;
+            border-radius:10px;
+            background:#4B49AC;
+            color:#fff !important;
+            text-decoration:none;
+            font-size:11px;
+            font-weight:900;
+            white-space:nowrap;
+        }
+
+        .mapping-alert-button:hover{
+            background:#343178;
+            color:#fff !important;
+        }
+
+        @media(max-width:768px){
+            .mapping-alert{
+                align-items:flex-start;
+                flex-wrap:wrap;
+            }
+
+            .mapping-alert-content{
+                width:calc(100% - 60px);
+            }
+
+            .mapping-alert-button{
+                margin-left:58px;
+            }
+        }
 </style>
 
 <div class="dashboard-skill">
@@ -1476,7 +1551,30 @@
             <div class="executive-sub">Submitted, dinilai, lulus, & tidak lulus</div>
             <div class="executive-trend">total</div>
         </div>
-    </div>
+        </div>
+    @if(auth()->user()->role === 'admin' && $totalOperatorBelumMapping > 0)
+        <div class="mapping-alert mb-3">
+            <div class="mapping-alert-icon">
+                <i class="bi bi-person-exclamation"></i>
+            </div>
+
+            <div class="mapping-alert-content">
+                <div class="mapping-alert-title">
+                    Ada {{ $totalOperatorBelumMapping }} Operator Belum Mapping Leader
+                </div>
+
+                <div class="mapping-alert-text">
+                    Operator yang belum memiliki Leader tidak dapat melakukan Skill Assessment.
+                    Silakan lakukan mapping Leader terlebih dahulu.
+                </div>
+            </div>
+
+            <a href="{{ route('operators.index') }}" class="mapping-alert-button">
+                Mapping Sekarang
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    @endif
 
     <div class="card-shell workflow-card section-space">
         <div class="panel-head">

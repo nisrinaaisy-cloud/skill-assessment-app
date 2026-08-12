@@ -646,7 +646,7 @@
                 <div class="summary-grid">
                     <div class="summary-item">
                         <div class="summary-label">Operator</div>
-                        <div class="summary-value">{{ $assessment->operator->nama ?? '-' }}</div>
+                        <div class="summary-value">{{ $assessment->operator->nama_lengkap ?? '-' }}</div>
                         <div class="summary-sub">NIK: {{ $assessment->operator->nik ?? '-' }}</div>
                     </div>
 
@@ -811,27 +811,29 @@
                     <span>{{ $penilaian->nilai_qpoint ?? '-' }}</span>
                 </div>
             </div>
-
+            @if(!empty($penilaian->catatan_penilai))
+                <div class="note-box">
+                    <div class="note-title">Catatan Leader</div>
+                    <div class="note-text">{{ $penilaian->catatan_penilai }}</div>
+                </div>
+            @endif
             @if(!empty($approval->foreman_note))
                 <div class="note-box">
                     <div class="note-title">Catatan Foreman</div>
                     <div class="note-text">{{ $approval->foreman_note }}</div>
                 </div>
             @endif
-
             @if(!empty($approval->kabag_note))
                 <div class="note-box">
                     <div class="note-title">Catatan Kabag</div>
                     <div class="note-text">{{ $approval->kabag_note }}</div>
                 </div>
             @endif
-
             @if($canProcessForeman || $canProcessKabag)
                 <form action="{{ route('approvals.approve', $approval->id) }}"
                       method="POST"
                       class="approval-form">
                     @csrf
-
                     <div class="mb-2">
                         <label class="form-label">Catatan Approval</label>
                         <textarea name="note"

@@ -466,27 +466,95 @@
         background:#6b7280;
         color:#fff;
     }
+    .mapping-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 18px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #FFF8E8, #FFF4D8);
+        border: 1px solid #F6D98B;
+        box-shadow: 0 10px 24px rgba(234, 179, 8, .08);
+    }
+
+    .mapping-info-icon {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #FFF0C2;
+        color: #D99100;
+        font-size: 19px;
+    }
+
+    .mapping-info-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mapping-info-title {
+        font-size: 15px;
+        font-weight: 900;
+        color: #92400E;
+        margin-bottom: 3px;
+    }
+
+    .mapping-info-text {
+        font-size: 14px;
+        font-weight: 650;
+        color: #7C5A16;
+        line-height: 1.45;
+    }
+
+    .mapping-info-text strong {
+        font-weight: 900;
+        color: #92400E;
+    }
+
+    @media (max-width: 768px) {
+        .mapping-info {
+            align-items: flex-start;
+        }
+
+        .mapping-info-icon {
+            margin-top: 1px;
+        }
+    }
 </style>
-
-<div class="operator-page">
-
-    <div class="operator-hero mb-4">
-        <div>
-            <div class="operator-hero-title">Part Division Mapping</div>
-            <div class="operator-hero-subtitle">
-                Mapping divisi pada master part untuk kebutuhan Skill Assessment.
+    <div class="operator-page">
+        <div class="operator-hero mb-4">
+            <div>
+                <div class="operator-hero-title">Part Division Mapping</div>
+                <div class="operator-hero-subtitle">
+                    Mapping divisi pada master part untuk kebutuhan Skill Assessment.
+                </div>
             </div>
         </div>
-    </div>
-    <div class="filter-card p-3 mb-4">
+        <div class="mapping-info mb-4">
+            <div class="mapping-info-icon">
+                <i class="bi bi-info-circle"></i>
+            </div>
+            <div class="mapping-info-content">
+                <div class="mapping-info-title">
+                    Informasi Master Part & Mapping
+                </div>
+                <div class="mapping-info-text">
+                    Data part berasal dari database resmi IT. Admin tidak dapat menambah atau menghapus part secara langsung melalui aplikasi.
+                    Jika terdapat part baru, perubahan data, atau penghapusan part, silakan koordinasikan dengan IT.
+                    <strong>Mapping divisi merupakan kewenangan Admin</strong> dan dapat dilakukan melalui halaman ini.
+                </div>
+            </div>
+        </div>
+        <div class="filter-card p-3 mb-4">
         <form method="GET" action="{{ route('parts.index') }}" id="filterForm">
         <div class="row g-3 align-items-end">
-
             <div class="col-lg-8">
                 <label class="form-label fw-semibold">
                     Search Nama / No Part
                 </label>
-
                 <input
                     type="text"
                     name="search"
@@ -496,7 +564,6 @@
                     placeholder="Cari Nama Part / No Part..."
                 >
             </div>
-
             <div class="col-lg-4">
                 <label class="form-label fw-semibold">
                     Divisi

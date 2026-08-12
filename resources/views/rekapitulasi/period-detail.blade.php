@@ -210,20 +210,6 @@
 
 <div class="operator-page">
 
-    <div class="operator-hero mb-4">
-        <div>
-            <div class="operator-hero-title">Detail Part Assessment</div>
-            <div class="operator-hero-subtitle">
-                Detail part, nilai, status, dan approval operator pada periode {{ $periode->bulan }}/{{ $periode->tahun }}.
-            </div>
-        </div>
-
-        <a href="{{ route('rekapitulasi.show', $operator->id) }}" class="btn btn-reset">
-            <i class="bi bi-arrow-left me-1"></i>
-            Kembali
-        </a>
-    </div>
-
     <div class="info-card p-3 mb-4">
         <div class="row g-3">
             <div class="col-md-3">

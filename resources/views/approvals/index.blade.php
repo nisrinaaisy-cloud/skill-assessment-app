@@ -289,19 +289,6 @@
             {{ $approvals->total() }} Pending
         </div>
     </div>
-
-    @if(session('success'))
-        <div class="alert alert-success border-0 shadow-sm rounded-4">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger border-0 shadow-sm rounded-4">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <div class="table-card p-3">
         <div class="table-responsive">
             <table class="table approval-table align-middle mb-0">
@@ -336,27 +323,21 @@
                                 ? 'status-approved'
                                 : 'status-pending';
                         @endphp
-
                         <tr>
                             <td>{{ $approvals->firstItem() + $loop->index }}</td>
-
-                            <td class="text-name">
-                                {{ $assessment->operator->nama ?? '-' }}
-                                <div class="operator-sub">
-                                    Attempt ke-{{ $assessment->attempt_no ?? 1 }}
-                                </div>
-                            </td>
-
+                                <td class="text-name">
+                                    {{ $assessment->operator->nama_lengkap ?? '-' }}
+                                    <div class="operator-sub">
+                                        Attempt ke-{{ $assessment->attempt_no ?? 1 }}
+                                    </div>
+                                </td>
                             <td>
                                 <span class="nik-badge">
                                     {{ $assessment->operator->nik ?? '-' }}
                                 </span>
                             </td>
-
                             <td>{{ $assessment->operator->divisi->nama_divisi ?? '-' }}</td>
-
                             <td>{{ $assessment->part->nama_part ?? '-' }}</td>
-
                             <td>
                                 {{ $assessment->periode->bulan ?? '-' }}/{{ $assessment->periode->tahun ?? '-' }}
                             </td>

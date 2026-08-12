@@ -130,6 +130,30 @@
             background: linear-gradient(135deg, var(--primary), var(--support-purple));
             box-shadow: 0 10px 18px rgba(75, 73, 172, .22);
         }
+        .btn-kembali-awal {
+            width: 100%;
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 14px 20px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #5148B8, #7370EA);
+            color: #fff !important;
+            font-size: 16px;
+            font-weight: 800;
+            text-decoration: none !important;
+            box-shadow: 0 10px 22px rgba(81, 72, 184, .20);
+            transition: .2s ease;
+        }
+
+        .btn-kembali-awal:hover {
+            color: #fff !important;
+            text-decoration: none !important;
+            transform: translateY(-1px);
+            box-shadow: 0 12px 26px rgba(81, 72, 184, .26);
+        }
     </style>
 </head>
 
@@ -158,7 +182,7 @@
             @isset($assessment)
                 <div class="info-box">
                     <div class="info-label">Operator</div>
-                    <div class="info-value">{{ optional($assessment->operator)->nama ?? '-' }}</div>
+                    <div class="info-value">{{ optional($assessment->operator)->nama_lengkap ?? '-' }}</div>
 
                     <div class="info-label">Part</div>
                     <div class="info-value">
@@ -176,7 +200,7 @@
                 </div>
             @endisset
 
-            <a href="{{ route('operator.assessment.index') }}" class="btn btn-main w-100">
+            <a href="{{ route('operator.assessment.index') }}" class="btn-kembali-awal">
                 Kembali ke Awal
             </a>
         </div>

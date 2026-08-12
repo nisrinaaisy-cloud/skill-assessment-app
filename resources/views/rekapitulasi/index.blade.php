@@ -272,10 +272,10 @@
             </div>
         </div>
 
-        <a href="{{ route('rekapitulasi.export', request()->query()) }}" class="btn-add-operator">
+        <!-- <a href="{{ route('rekapitulasi.export', request()->query()) }}" class="btn-add-operator">
             <i class="bi bi-download me-1"></i>
             Download Rekap
-        </a>
+        </a> -->
     </div>
 
     <div class="filter-card p-3 mb-4">

@@ -27,23 +27,22 @@ class OperatorController extends Controller
 		}
 		$operators=$query->orderBy('nama_lengkap')->paginate(10)->withQueryString();
 		$divisis=Divisi::orderBy('nama_divisi')->get();
-        $leaders=LeaderAssignment::with('leader')
-            ->where('is_active',1)
-            ->when($request->filled('divisi_id'),function($q) use($request){
-                $q->where('divisi_id',$request->divisi_id);
-            })
-            ->whereHas('leader',function($q){
-                $q->where('role','leader');
-            })
-            ->get()
-            ->map(fn($item)=>$item->leader)
-            ->filter()
-            ->unique('id')
-            ->sortBy('name')
-            ->values();
+		$leaders=LeaderAssignment::with('leader')
+			->where('is_active',1)
+			->when($request->filled('divisi_id'),function($q) use($request){
+				$q->where('divisi_id',$request->divisi_id);
+			})
+			->whereHas('leader',function($q){
+				$q->where('role','leader');
+			})
+			->get()
+			->map(fn($item)=>$item->leader)
+			->filter()
+			->unique('id')
+			->sortBy('name')
+			->values();
 		return view('operators.index',compact('operators','divisis','leaders'));
 	}
-
 	public function create()
 	{
 		$divisis=Divisi::orderBy('nama_divisi')->get();
@@ -56,7 +55,6 @@ class OperatorController extends Controller
 			->values();
 		return view('operators.create',compact('divisis','leaders'));
 	}
-
 	public function store(Request $request)
 	{
 		$request->validate([
@@ -76,12 +74,10 @@ class OperatorController extends Controller
 		]);
 		return redirect()->route('operators.index')->with('success','Operator berhasil ditambahkan.');
 	}
-
 	public function show(string $id)
 	{
 		return redirect()->route('operators.index');
 	}
-
 	public function edit($id)
 	{
 		$operator=Operator::findOrFail($id);
@@ -96,7 +92,6 @@ class OperatorController extends Controller
 			->values();
 		return view('operators.edit',compact('operator','divisis','leaders'));
 	}
-
 	public function update(Request $request,$id)
 	{
 		$operator=Operator::findOrFail($id);
@@ -117,7 +112,6 @@ class OperatorController extends Controller
 		]);
 		return redirect()->route('operators.index')->with('success','Data operator berhasil diperbarui.');
 	}
-
 	public function destroy($id)
 	{
 		$operator=Operator::findOrFail($id);

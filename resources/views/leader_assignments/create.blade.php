@@ -92,6 +92,16 @@
 	.leader-info.show{
 		display:block;
 	}
+	.assignment-note{
+		margin-top:14px;
+		padding:11px 14px;
+		border-radius:12px;
+		background:#f8faff;
+		border:1px solid #e1e7f5;
+		color:#64748b;
+		font-size:14px;
+		line-height:1.45;
+	}
 	.leader-info-title{
 		font-size:13px;
 		font-weight:800;
@@ -160,7 +170,16 @@
 				<div class="leader-info-title" id="leaderInfoName"></div>
 				<div class="leader-info-text" id="leaderInfoNik"></div>
 			</div>
-
+			<div class="assignment-note">
+			<div class="assignment-note-title"><i class="bi bi-info-circle me-1"></i>Petunjuk Leader Assignment</div>
+				<ul>
+					<li>Pastikan Leader sudah dibuat terlebih dahulu di <strong>User Management</strong>.</li>
+					<li>User harus memiliki jabatan <strong>Leader</strong>, username, dan password.</li>
+					<li>Pastikan cakupan divisi Leader sudah sesuai.</li>
+					<li>Pilih Divisi, lalu pilih Leader yang tersedia.</li>
+					<li>Klik <strong>Simpan</strong> untuk menetapkan Leader pada divisi.</li>
+				</ul>
+			</div>
 			<div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
 				<a href="{{ route('leader-assignments.index') }}" class="btn-cancel">
 					Batal

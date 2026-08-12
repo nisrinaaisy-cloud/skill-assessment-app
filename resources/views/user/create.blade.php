@@ -29,9 +29,9 @@
 		font-weight:800;
 		text-transform:uppercase;
 		color:#6b7280;
+		margin-bottom:7px;
 	}
-	.form-control,
-	.form-select{
+	.form-control,.form-select{
 		height:46px;
 		border-radius:12px;
 	}
@@ -42,6 +42,7 @@
 		border-radius:14px;
 		padding:11px 22px;
 		font-weight:700;
+		text-decoration:none;
 	}
 	.btn-back{
 		border:none;
@@ -97,6 +98,56 @@
 		color:#4B49AC;
 		font-size:13px;
 		font-weight:700;
+		min-height:46px;
+		align-items:center;
+	}
+	.form-section{
+		display:flex;
+		flex-direction:column;
+		gap:18px;
+	}
+	.account-note{
+		margin-top:0;
+		padding:11px 14px;
+		border-radius:12px;
+		background:#f8faff;
+		border:1px solid #e1e7f5;
+		color:#64748b;
+		font-size:11px;
+		line-height:1.45;
+	}
+	.account-note-title{
+		color:#4B49AC;
+		font-weight:800;
+		font-size:11px;
+		margin-bottom:5px;
+	}
+	.account-note ul{
+		margin:0;
+		padding-left:15px;
+	}
+	.account-note li{
+		margin-bottom:2px;
+	}
+	.form-actions{
+		margin-top:24px;
+		padding-top:18px;
+		border-top:1px solid #e5e7eb;
+		display:flex;
+		justify-content:space-between;
+		align-items:center;
+		width:100%;
+	}
+	@media(max-width:767.98px){
+		.form-card{
+			padding:20px;
+		}
+		.form-actions{
+			gap:12px;
+		}
+		.btn-back,.btn-save{
+			padding:10px 16px;
+		}
 	}
 </style>
 <div class="page-hero">
@@ -113,59 +164,67 @@
 	</div>
 @endif
 <div class="form-card">
-	<form action="{{ route('user.store') }}" method="POST">
+	<form action="{{ route('user.store') }}" method="POST" autocomplete="off">
 		@csrf
-		<div class="row g-3">
+		<div class="row g-4">
 			<div class="col-md-6">
-				<label class="form-label">Nama</label>
-				<input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
-			</div>
-			<div class="col-md-6">
-				<label class="form-label">NIK</label>
-				<input type="text" name="employee_nik" class="form-control" value="{{ old('employee_nik') }}" placeholder="NIK karyawan">
-			</div>
-			<div class="col-md-6">
-				<label class="form-label">Username</label>
-				<input type="text" name="username" class="form-control" value="{{ old('username') }}" required>
-			</div>
-			<div class="col-md-6">
-				<label class="form-label">Email</label>
-				<input type="email" name="email" class="form-control" value="{{ old('email') }}">
-			</div>
-			<div class="col-md-6">
-				<label class="form-label">Jabatan</label>
-				<select name="role" id="role" class="form-select" required>
-					<option value="">Pilih Jabatan</option>
-					<option value="admin" {{ old('role')==='admin'?'selected':'' }}>Admin</option>
-					<option value="leader" {{ old('role')==='leader'?'selected':'' }}>Leader</option>
-					<option value="foreman" {{ old('role')==='foreman'?'selected':'' }}>Foreman</option>
-					<option value="kabag" {{ old('role')==='kabag'?'selected':'' }}>Kabag</option>
-				</select>
-			</div>
-			<div class="col-md-6">
-				<label class="form-label">Cakupan Divisi</label>
-				<div id="productionInfo" class="production-info">
-					<i class="bi bi-building me-1"></i>
-					Mencakup seluruh Produksi: Stamping, Machining, Welding, dan Packing.
+				<div class="form-section">
+					<div>
+						<label class="form-label">Nama</label>
+						<input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="Nama lengkap user" autocomplete="off" required>
+					</div>
+					<div>
+						<label class="form-label">Username</label>
+						<input type="text" name="username" class="form-control" value="{{ old('username') }}" placeholder="Username untuk login" autocomplete="new-username" required>
+					</div>
+					<div>
+						<label class="form-label">Jabatan</label>
+						<select name="role" id="role" class="form-select" required>
+							<option value="">Pilih Jabatan</option>
+							<option value="admin" {{ old('role')==='admin'?'selected':'' }}>Admin</option>
+							<option value="leader" {{ old('role')==='leader'?'selected':'' }}>Leader</option>
+							<option value="foreman" {{ old('role')==='foreman'?'selected':'' }}>Foreman</option>
+							<option value="kabag" {{ old('role')==='kabag'?'selected':'' }}>Kabag</option>
+						</select>
+					</div>
+					<div>
+						<label class="form-label">Password</label>
+						<input type="password" name="password" class="form-control" placeholder="Buat password untuk user" autocomplete="new-password" required>
+					</div>
 				</div>
-				<div id="divisiBox" class="divisi-box">
-					@foreach($divisis as $divisi)
-						<div class="divisi-item">
-							<input type="checkbox" name="divisi_ids[]" value="{{ $divisi->id }}" id="divisi_{{ $divisi->id }}" {{ in_array($divisi->id,old('divisi_ids',[]))?'checked':'' }}>
-							<label for="divisi_{{ $divisi->id }}">{{ strtoupper($divisi->nama_divisi) }}</label>
+			</div>
+			<div class="col-md-6">
+				<div class="form-section">
+					<div>
+						<label class="form-label">NIK</label>
+						<input type="text" name="employee_nik" class="form-control" value="{{ old('employee_nik') }}" placeholder="NIK karyawan" autocomplete="off">
+					</div>
+					<div>
+						<label class="form-label">Email</label>
+						<input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="Email user" autocomplete="off">
+					</div>
+					<div>
+						<label class="form-label">Cakupan Divisi</label>
+						<div id="productionInfo" class="production-info">
+							<i class="bi bi-building me-1"></i>
+							Mencakup seluruh Produksi: Stamping, Machining, Welding, dan Packing.
 						</div>
-					@endforeach
+						<div id="divisiBox" class="divisi-box">
+							@foreach($divisis as $divisi)
+								<div class="divisi-item">
+									<input type="checkbox" name="divisi_ids[]" value="{{ $divisi->id }}" id="divisi_{{ $divisi->id }}" {{ in_array($divisi->id,old('divisi_ids',[]))?'checked':'' }}>
+									<label for="divisi_{{ $divisi->id }}">{{ strtoupper($divisi->nama_divisi) }}</label>
+								</div>
+							@endforeach
+						</div>
+						<div id="divisiInfo" class="divisi-info">
+							Pilih satu atau lebih divisi jika user adalah Leader atau Foreman.
+						</div>
+					</div>
 				</div>
-				<div id="divisiInfo" class="divisi-info">
-					Pilih satu atau lebih divisi jika user adalah Leader atau Foreman.
-				</div>
-			</div>
-			<div class="col-md-6">
-				<label class="form-label">Password</label>
-				<input type="password" name="password" class="form-control" required>
 			</div>
 		</div>
-		<div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+		<div class="form-actions">
 			<a href="{{ route('user.index') }}" class="btn-back">Kembali</a>
 			<button type="submit" class="btn-save">Simpan User</button>
 		</div>
@@ -180,7 +239,7 @@
 	function updateDivisi(){
 		const isProductionRole=role.value==='admin'||role.value==='kabag';
 		divisiBox.style.display=isProductionRole?'none':'block';
-		productionInfo.style.display=isProductionRole?'block':'none';
+		productionInfo.style.display=isProductionRole?'flex':'none';
 		divisiInfo.style.display=isProductionRole?'none':'block';
 		divisiCheckboxes.forEach(function(checkbox){
 			checkbox.disabled=isProductionRole;

@@ -385,13 +385,6 @@
             Tambah Operator
         </a>
     </div>
-
-    @if(session('success'))
-        <div class="alert alert-success rounded-4 border-0 shadow-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="filter-card p-3 mb-4">
         <form method="GET" action="{{ route('operators.index') }}" id="filterForm">
             <div class="row g-3 align-items-end">
@@ -488,21 +481,6 @@
                                     </span>
                                 @endif
                             </td>
-
-                            <!-- <td>
-                                @if($operator->is_active)
-                                    <span class="status-active">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                        Aktif
-                                    </span>
-                                @else
-                                    <span class="status-inactive">
-                                        <i class="bi bi-dash-circle-fill"></i>
-                                        Nonaktif
-                                    </span>
-                                @endif
-                            </td> -->
-
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
                                     <a href="{{ route('operators.edit', $operator->id) }}" class="btn-action-edit">

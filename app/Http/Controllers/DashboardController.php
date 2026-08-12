@@ -36,6 +36,10 @@ class DashboardController extends Controller
 
         $totalOperator = Operator::where('is_active', 1)->count();
 
+        $totalOperatorBelumMapping = Operator::where('is_active', 1)
+            ->whereNull('leader_id')
+            ->count();
+
         $totalAssessment = Assessment::whereIn('status', $this->assessmentStatuses)
             ->whereYear('created_at', now()->year)
             ->count();
@@ -126,6 +130,7 @@ class DashboardController extends Controller
             'leaders',
             'selectedTargetPeriode',
             'totalOperator',
+            'totalOperatorBelumMapping',
             'totalAssessment',
             'assessmentSelesai',
             'totalLulus',

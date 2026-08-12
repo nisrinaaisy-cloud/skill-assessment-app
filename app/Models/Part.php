@@ -24,11 +24,16 @@ class Part extends Model
         return $this->hasMany(Subpart::class);
     }
 
-   public function assessments()
+    public function assessments()
     {
         return $this->hasMany(Assessment::class);
     }
 
+    public function partDivisions()
+    {
+        return $this->hasMany(PartDivision::class, 'part_id');
+    }
+    
     public function partProcesses()
     {
         return $this->hasMany(PartProcess::class);
@@ -38,14 +43,9 @@ class Part extends Model
     {
         return $this->belongsToMany(
             SubProcess::class,
-            'part_processes',
+            'part_sub_processes',
             'part_id',
             'sub_process_id'
-        )->withPivot('urutan')
-        ->orderByPivot('urutan');
-    }
-        public function partDivisions()
-    {
-        return $this->hasMany(PartDivision::class);
+        );
     }
 }

@@ -12,19 +12,44 @@ use Illuminate\Http\Request;
 
 class LeaderAssessmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $assessments = Assessment::with(['operator.divisi', 'part', 'periode', 'answer'])
-            ->where('status', 'submitted')
             ->whereHas('operator', function ($q) {
                 $q->where('leader_id', auth()->id());
             })
+            ->when($request->filled('status'), function ($q) use ($request) {
+                $q->where('status', $request->status);
+            }, function ($q) {
+                $q->where('status', 'submitted');
+            })
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $search = trim($request->search);
+                $q->where(function ($query) use ($search) {
+                    $query->whereHas('operator', function ($operatorQuery) use ($search) {
+                        $operatorQuery->where('nama_lengkap', 'like', '%' . $search . '%')
+                            ->orWhere('nik', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('part', function ($partQuery) use ($search) {
+                        $partQuery->where('nama_part', 'like', '%' . $search . '%')
+                            ->orWhere('no_part', 'like', '%' . $search . '%');
+                    });
+                });
+            })
+            ->when($request->filled('kategori'), function ($q) use ($request) {
+                $q->whereHas('part', function ($partQuery) use ($request) {
+                    $partQuery->where('kategori', $request->kategori);
+                });
+            })
+            ->when($request->filled('periode_id'), function ($q) use ($request) {
+                $q->where('periode_id', $request->periode_id);
+            })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return view('leader_assessments.index', compact('assessments'));
     }
-
     public function show(Assessment $assessment)
     {
         $assessment->load([
@@ -38,10 +63,11 @@ class LeaderAssessmentController extends Controller
         if ($assessment->operator->leader_id != auth()->id()) {
             abort(403);
         }
-
+        if ($assessment->status !== 'submitted') {
+            return redirect()->route('leader.assessments.index');
+        }
         return view('leader_assessments.show', compact('assessment'));
     }
-
     public function store(Request $request, Assessment $assessment)
     {
         $assessment->loadMissing(['operator', 'part']);
@@ -192,7 +218,7 @@ if ($statusLulus) {
     if ($foreman) {
         Notification::create([
             'title' => 'Assessment Menunggu Approval',
-            'message' => $assessment->operator->nama .
+            'message' => $assessment->operator->nama_lengkap .
                 ' dinyatakan LULUS oleh Leader dan menunggu approval Foreman.',
             'user_id' => $foreman->id,
             'assessment_id' => $assessment->id,

@@ -349,16 +349,6 @@
 </style>
 
 <div class="assessment-page">
-
-    <div class="assessment-hero">
-        <div>
-            <div class="assessment-hero-title">Form Penilaian Assessment</div>
-            <div class="assessment-hero-subtitle">
-                Review jawaban operator dan isi nilai berdasarkan nilai maksimal assessment.
-            </div>
-        </div>
-    </div>
-
     @if(session('error'))
         <div class="alert alert-danger border-0 shadow-sm rounded-4">
             {{ session('error') }}
@@ -368,7 +358,7 @@
     <div class="summary-grid">
         <div class="summary-card">
             <div class="summary-label">Operator</div>
-            <div class="summary-value">{{ $assessment->operator->nama ?? '-' }}</div>
+            <div class="summary-value">{{ $assessment->operator->nama_lengkap ?? '-' }}</div>
             <div class="summary-sub">{{ $assessment->operator->nik ?? '-' }}</div>
         </div>
 

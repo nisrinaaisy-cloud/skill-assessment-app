@@ -37,6 +37,15 @@ class OperatorAssessmentController extends Controller
             'email' => $request->email,
         ]);
 
+        if (!$operator->leader_id) {
+            return view('operator_assessment.status', [
+                'title' => 'Operator Belum Memiliki Leader',
+                'message' => 'Operator ini belum memiliki Leader. Silakan hubungi Admin untuk melakukan mapping Leader sebelum mengisi Skill Assessment.',
+                'type' => 'warning',
+                'operator' => $operator,
+            ]);
+        }
+
         $failedAssessment = Assessment::where('operator_id', $operator->id)
             ->where('status', 'tidak_lulus')
             ->latest()
@@ -68,19 +77,45 @@ class OperatorAssessmentController extends Controller
             'operator.assessment.pilihPart',
             $operator->id
         );
-    } // <<< WAJIB ADA KURUNG INI
-
+    } 
     public function pilihPart(Operator $operator)
     {
-        $parts = Part::where('is_active',1)
-        ->whereHas('partDivisions',function($q) use($operator){
-            $q->where('division_id',$operator->divisi_id);
-        })
-        ->with(['subProcesses','partDivisions.division'])
-        ->orderBy('nama_part')
-        ->get();
+        if (!$operator->leader_id) {
+            return view('operator_assessment.status', [
+                'title' => 'Operator Belum Memiliki Leader',
+                'message' => 'Operator ini belum memiliki Leader. Silakan hubungi Admin untuk melakukan mapping Leader sebelum mengisi Skill Assessment.',
+                'type' => 'warning',
+                'operator' => $operator,
+            ]);
+        }
+
+        $operatorDivisionId = $operator->divisi_id;
+
+        if (!$operatorDivisionId) {
+            return view('operator_assessment.status', [
+                'title' => 'Divisi Operator Belum Ditentukan',
+                'message' => 'Operator belum memiliki divisi. Silakan hubungi Admin.',
+                'type' => 'warning',
+            ]);
+        }
+
+        $parts = Part::where('is_active', 1)
+            ->whereHas('partDivisions', function ($query) use ($operatorDivisionId) {
+                $query->where('division_id', $operatorDivisionId);
+            })
+            ->with('subProcesses')
+            ->orderBy('nama_part')
+            ->get();
 
         $periodeAktif = $this->getTargetPeriodeForOperator($operator);
+
+        if (!$periodeAktif) {
+            return view('operator_assessment.status', [
+                'title' => 'Periode Belum Tersedia',
+                'message' => 'Belum ada data periode assessment yang dapat digunakan. Silakan hubungi Admin.',
+                'type' => 'warning',
+            ]);
+        }
 
         $totalLulus = Assessment::where('operator_id', $operator->id)
             ->where('periode_id', $periodeAktif->id)
@@ -89,13 +124,6 @@ class OperatorAssessmentController extends Controller
             ->count('part_id');
 
         $sisaPart = max(0, 3 - $totalLulus);
-        if (!$periodeAktif) {
-            return view('operator_assessment.status', [
-                'title' => 'Periode Belum Tersedia',
-                'message' => 'Belum ada data periode assessment yang dapat digunakan. Silakan hubungi Admin.',
-                'type' => 'warning',
-            ]);
-        }
 
         $tanggalMasuk = $this->getTanggalMasukOperator($operator);
         $periodeBerjalan = Periode::where('bulan', now()->month)
@@ -121,25 +149,28 @@ class OperatorAssessmentController extends Controller
             'sisaPart'
         ));
     }
-
     public function mulai(Request $request)
     {
-       $request->validate([
-            'operator_id'    => 'required|exists:operators,id',
-            'periode_id'     => 'required|exists:periode,id',
-            'part_id'        => 'required|exists:parts,id',
-            'sub_process_id' => 'required|exists:sub_processes,id',
-        ]);
+    $request->validate([
+        'operator_id'     => 'required|exists:operators,id',
+        'periode_id'      => 'required|exists:periode,id',
+        'part_id'         => 'required|exists:parts,id',
+        'sub_process_id'  => 'required|exists:sub_processes,id',
+    ]);
 
-       $operatorId    = $request->operator_id;
-        $periodeId     = $request->periode_id;
-        $partId        = $request->part_id;
-        $subProcessId  = $request->sub_process_id;
+    $operatorId   = $request->operator_id;
+    $periodeId    = $request->periode_id;
+    $partId       = $request->part_id;
+    $subProcessId = $request->sub_process_id;
 
-        $draftAssessment = Assessment::where('operator_id', $operatorId)
-            ->where('status', 'draft')
-            ->latest('id')
-            ->first();
+    $part = Part::findOrFail($partId);
+    $operator = Operator::findOrFail($operatorId);
+
+    $draftAssessment = Assessment::where('operator_id', $operatorId)
+        ->where('part_id', $partId)
+        ->where('status', 'draft')
+        ->latest('id')
+        ->first();
 
         if ($draftAssessment) {
 
@@ -147,30 +178,29 @@ class OperatorAssessmentController extends Controller
                 ->route('operator.assessment.form', $draftAssessment->id)
                 ->with(
                     'warning',
-                    'Anda masih memiliki Assessment yang belum diselesaikan.'
+                    'Anda masih memiliki Assessment untuk Part ini yang belum diselesaikan.'
                 );
 
         }
-
-        $part = Part::findOrFail($partId);
+       $part = Part::findOrFail($partId);
         $operator = Operator::findOrFail($operatorId);
-        $validDivision=$part->partDivisions()
-            ->where('division_id',$operator->divisi_id)
-            ->exists();
 
-        if(!$validDivision){
+        $validDivision = $operator->divisi_id
+            && $part->partDivisions()
+                ->where('division_id', $operator->divisi_id)
+                ->exists();
+
+        if (!$validDivision) {
             return back()->with(
                 'error',
-                'Part tidak sesuai dengan divisi operator.'
+                'Part belum ter-mapping ke divisi operator.'
             );
         }
-
         /*
         |--------------------------------------------------------------------------
         | CEK STATUS ASSESSMENT TERAKHIR
         |--------------------------------------------------------------------------
         */
-
             $lastAssessment = Assessment::where('operator_id', $operatorId)
                 ->where('part_id', $partId)
                 ->latest('id')
@@ -320,42 +350,30 @@ class OperatorAssessmentController extends Controller
         $rules['nama_subpart'] = 'required|string';
     }
     $recallType = session('recall_type');
-
     /*
     |--------------------------------------------------------------------------
     | NORMALISASI
     |--------------------------------------------------------------------------
     */
+    $normalizeText = function ($value) {
+        return mb_strtolower(
+            preg_replace('/[^\p{L}\p{N}]+/u', '', trim((string) $value))
+        );
+    };
+    $normalizePartNumber = function ($value) {
+        return mb_strtoupper(
+            preg_replace('/[^\p{L}\p{N}]+/u', '', trim((string) $value))
+        );
+    };
+    $namaPartInput = $normalizeText($request->recall_nama_part ?? '');
+    $namaPartMaster = $normalizeText($part->nama_part ?? '');
+    $noPartInput = $normalizePartNumber($request->recall_no_part ?? '');
+    $noPartMaster = $normalizePartNumber($part->no_part ?? '');
 
-    $namaPartInput = mb_strtolower(
-        trim(
-            preg_replace('/\s+/', ' ', $request->recall_nama_part)
-        )
-    );
+    $subProcessInput = $normalizeText($request->recall_proses);
 
-    $namaPartMaster = mb_strtolower(
-        trim(
-            preg_replace('/\s+/', ' ', $part->nama_part)
-        )
-    );
-
-    $noPartInput = strtoupper(str_replace(' ', '', trim($request->recall_no_part)));
-    $noPartMaster = strtoupper(str_replace(' ', '', trim($part->no_part)));
-
-    $subProcessInput = mb_strtolower(
-        trim(
-            preg_replace('/\s+/', ' ', $request->recall_proses)
-        )
-    );
-
-    $subProcessMaster = mb_strtolower(
-        trim(
-            preg_replace(
-                '/\s+/',
-                ' ',
-                optional($assessment->subProcess)->nama_sub_proses ?? ''
-            )
-        )
+    $subProcessMaster = $normalizeText(
+        optional($assessment->subProcess)->nama_sub_proses ?? ''
     );
     if ($recallType == 1) {
 
@@ -451,10 +469,9 @@ class OperatorAssessmentController extends Controller
             'periode'
         );
 
-        $message = $assessment->operator->nama . ' baru mengisi assessment part ' .
+        $message = $assessment->operator->nama_lengkap . ' baru mengisi assessment part ' .
             $assessment->part->nama_part . ' periode ' .
             $assessment->periode->label . '. Menunggu penilaian leader.';
-
        if ($assessment->operator->leader_id) {
 
             Notification::create([

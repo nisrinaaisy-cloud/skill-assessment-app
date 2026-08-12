@@ -389,12 +389,6 @@
             Tambah Periode
         </a>
     </div>
-
-    @if(session('success'))
-        <div class="alert alert-success rounded-4 border-0 shadow-sm">
-            {{ session('success') }}
-        </div>
-    @endif
             <div class="filter-card p-3 mb-4">
         <form method="GET" action="{{ route('periode.index') }}">
             <div class="row g-3 align-items-end">

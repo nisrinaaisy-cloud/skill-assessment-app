@@ -232,19 +232,6 @@
             {{ $assessments->total() }} Assessment
         </div>
     </div>
-
-    @if(session('success'))
-        <div class="alert alert-success border-0 shadow-sm rounded-4">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger border-0 shadow-sm rounded-4">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <div class="filter-card p-3 mb-4">
         <form method="GET" action="{{ route('leader.assessments.index') }}" id="filterForm">
             <div class="row g-3 align-items-end">
@@ -319,7 +306,7 @@
                             <td>{{ $assessments->firstItem() + $loop->index }}</td>
 
                             <td class="text-name">
-                                {{ $assessment->operator->nama ?? '-' }}
+                                {{ $assessment->operator->nama_lengkap ?? '-' }}
                                 <div class="operator-sub">
                                     Attempt ke-{{ $assessment->attempt_no ?? 1 }}
                                 </div>
