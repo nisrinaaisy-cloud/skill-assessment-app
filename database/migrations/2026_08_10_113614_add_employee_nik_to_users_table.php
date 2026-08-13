@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -47,7 +48,17 @@ return new class extends Migration
 			}
 
 			if(Schema::hasColumn('users','divisi_id')){
-				$table->dropForeign(['divisi_id']);
+				$foreignKeyExists = DB::select("
+					SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS
+					WHERE TABLE_SCHEMA = DATABASE()
+					AND TABLE_NAME = 'users'
+					AND CONSTRAINT_NAME = 'users_divisi_id_foreign'
+				");
+
+				if(!empty($foreignKeyExists)){
+					$table->dropForeign(['divisi_id']);
+				}
+
 				$table->dropColumn('divisi_id');
 			}
 

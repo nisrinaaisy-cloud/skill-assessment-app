@@ -8,18 +8,22 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('leader_assignments', function (Blueprint $table) {
-            $table->foreign('divisi_id')
-                  ->references('id')
-                  ->on('divisi')
-                  ->cascadeOnDelete();
-        });
+        if (Schema::hasColumn('leader_assignments', 'divisi_id')) {
+            Schema::table('leader_assignments', function (Blueprint $table) {
+                $table->foreign('divisi_id')
+                      ->references('id')
+                      ->on('divisi')
+                      ->cascadeOnDelete();
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('leader_assignments', function (Blueprint $table) {
-            $table->dropForeign(['divisi_id']);
-        });
+        if (Schema::hasColumn('leader_assignments', 'divisi_id')) {
+            Schema::table('leader_assignments', function (Blueprint $table) {
+                $table->dropForeign(['divisi_id']);
+            });
+        }
     }
 };

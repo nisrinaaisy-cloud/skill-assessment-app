@@ -38,10 +38,15 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('approvals', function (Blueprint $table) {
-            $table->dropForeign(['foreman_id']);
-            $table->dropForeign(['kabag_id']);
+            if (Schema::hasColumn('approvals', 'foreman_id')) {
+                $table->dropForeign(['foreman_id']);
+            }
 
-            $table->dropColumn([
+            if (Schema::hasColumn('approvals', 'kabag_id')) {
+                $table->dropForeign(['kabag_id']);
+            }
+
+            $columns = array_filter([
                 'foreman_id',
                 'status_foreman',
                 'foreman_note',
@@ -50,7 +55,11 @@ return new class extends Migration
                 'status_kabag',
                 'kabag_note',
                 'kabag_approved_at',
-            ]);
+            ], fn ($column) => Schema::hasColumn('approvals', $column));
+
+            if (!empty($columns)) {
+                $table->dropColumn($columns);
+            }
         });
     }
 };

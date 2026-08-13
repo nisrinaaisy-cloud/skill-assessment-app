@@ -310,11 +310,11 @@
                             Nama Operator <span class="required-mark">*</span>
                         </label>
                         <input type="text"
-                               name="nama"
-                               class="form-control @error('nama') is-invalid @enderror"
-                               value="{{ old('nama', $operator->nama) }}"
+                               name="nama_lengkap"
+                               class="form-control @error('nama_lengkap') is-invalid @enderror"
+                               value="{{ old('nama_lengkap', $operator->nama_lengkap) }}"
                                placeholder="Contoh: Ahmad Kartiko">
-                        @error('nama')
+                        @error('nama_lengkap')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -323,7 +323,7 @@
                         <label class="form-label">
                             NIK <span class="required-mark">*</span>
                         </label>
-                        <<input type="text"
+                        <input type="text"
                             name="nik"
                             class="form-control"
                             value="{{ $operator->nik }}"

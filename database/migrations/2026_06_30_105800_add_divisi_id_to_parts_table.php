@@ -12,7 +12,6 @@ return new class extends Migration
 
             $table->foreignId('divisi_id')
                 ->nullable()
-                ->after('proses')
                 ->constrained('divisi')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();

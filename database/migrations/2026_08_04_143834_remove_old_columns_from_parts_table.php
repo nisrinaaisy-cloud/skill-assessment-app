@@ -13,9 +13,14 @@ return new class extends Migration
     {
         Schema::table('parts', function (Blueprint $table) {
 
-            $table->dropForeign(['divisi_id']);
-            $table->dropColumn('divisi_id');
-            $table->dropColumn('proses');
+            if (Schema::hasColumn('parts', 'divisi_id')) {
+                $table->dropForeign(['divisi_id']);
+                $table->dropColumn('divisi_id');
+            }
+
+            if (Schema::hasColumn('parts', 'proses')) {
+                $table->dropColumn('proses');
+            }
 
         });
     }
@@ -24,11 +29,15 @@ return new class extends Migration
     {
         Schema::table('parts', function (Blueprint $table) {
 
-            $table->string('proses')->nullable();
+            if (!Schema::hasColumn('parts', 'proses')) {
+                $table->string('proses')->nullable();
+            }
 
-            $table->foreignId('divisi_id')
-                ->nullable()
-                ->constrained('divisi');
+            if (!Schema::hasColumn('parts', 'divisi_id')) {
+                $table->foreignId('divisi_id')
+                    ->nullable()
+                    ->constrained('divisi');
+            }
 
         });
     }
